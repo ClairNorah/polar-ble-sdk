@@ -76,12 +76,17 @@ class PolarApp:
         self.log_status("Stopping...", "red")
 
     async def scan_and_connect(self):
+        self.log_status("Scanning for BLE devices...")
         devices = await BleakScanner.discover(timeout=5.0)
         for d in devices:
-            if "Polar" in d.name:
+            print(f"Found device: {d.name} ({d.address})")
+            if d.name and "Polar" in d.name:
                 self.device_address = d.address
+                print(f"--> Selected device: {d.name} ({d.address})")
                 return d.address
+        print("No Polar device found.")
         return None
+
 
     def run_async_ble(self):
         asyncio.run(self.record_ble_data())
@@ -99,6 +104,18 @@ class PolarApp:
                 rr = int.from_bytes(data[index:index+2], byteorder='little') / 1024 * 1000
                 rr_intervals.append(int(rr))
                 index += 2
+
+        now = datetime.utcnow().isoformat()
+
+        if rr_intervals:
+            for rr in rr_intervals:
+                self.csv_writer.writerow([now, hr, rr, self.child_id, ""])
+        else:
+            # Log HR with no RR interval
+            self.csv_writer.writerow([now, hr, "", self.child_id, ""])
+
+        print(f"[{now}] HR: {hr}, RR: {rr_intervals if rr_intervals else 'None'}")
+
 
         now = datetime.utcnow().isoformat()
         for rr in rr_intervals:

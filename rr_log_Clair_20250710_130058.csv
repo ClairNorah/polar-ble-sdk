@@ -1,0 +1,6 @@
+timestamp,heart_rate_bpm,rr_interval_ms,child_id,event
+2025-07-10T11:01:13.513528,,,Clair,Entered Triage
+2025-07-10T11:03:57.224820,,,Clair,Entered Waiting Room
+2025-07-10T11:04:01.732187,,,Clair,Entered Examination Room
+2025-07-10T11:04:04.649234,,,Clair,Entered Triage
+2025-07-10T11:04:08.449797,,,Clair,Entered Doctor's Examination
